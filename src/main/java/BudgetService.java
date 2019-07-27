@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 public class BudgetService {
     private BudgetRepo repo ;
     DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMM");
@@ -25,7 +27,14 @@ public class BudgetService {
                         .collect(Collectors.toList());
 
         if (foundBudgets.size() == 1) {
-            return new BigDecimal(foundBudgets.get(0).getAmount());
+            Budget budgetThisMonth = foundBudgets.get(0);
+            long monthDays = myYearMonth.lengthOfMonth();
+            long days = DAYS.between(start, end) + 1;
+            if (days == monthDays) {
+                return new BigDecimal(budgetThisMonth.getAmount());
+            }
+            long budgetPerDay = budgetThisMonth.getAmount() / monthDays;
+            return new BigDecimal(budgetPerDay * days);
         }
         return new BigDecimal(0);
     }

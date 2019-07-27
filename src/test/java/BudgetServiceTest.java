@@ -33,10 +33,17 @@ public class BudgetServiceTest extends TestCase{
     }
 
     public void testOneMonthBudgetData(){
-        when(repo.getAll()).thenReturn(Arrays.asList(new Budget("201903", 3000)));
+        when(repo.getAll()).thenReturn(Arrays.asList(new Budget("201903", 3100)));
         LocalDate start = LocalDate.of(2019,3,1);
         LocalDate end = LocalDate.of(2019,3,31);
-        budgetOfRangeShouldBe(new BigDecimal(3000) , start, end);
+        budgetOfRangeShouldBe(new BigDecimal(3100) , start, end);
+    }
+
+    public void test_partial_month_budget_data(){
+        when(repo.getAll()).thenReturn(Arrays.asList(new Budget("201904", 3000)));
+        LocalDate start = LocalDate.of(2019,4,15);
+        LocalDate end = LocalDate.of(2019,4,20);
+        budgetOfRangeShouldBe(new BigDecimal(600) , start, end);
     }
 
     private void budgetOfRangeShouldBe(BigDecimal expected, LocalDate start, LocalDate end) {
